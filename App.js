@@ -32,7 +32,7 @@ export default function App() {
 	}, [googleAuthResponse])
 
 	useEffect(() => {
-		console.log("facebook auth response : ", facebookAuthResponse)
+		// console.log("facebook auth response : ", facebookAuthResponse)
 		if (facebookAuthResponse?.type === "success") {
 			const { code } = facebookAuthResponse.params;
 			onFetchFacebookData(code)
