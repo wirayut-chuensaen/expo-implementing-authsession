@@ -1,0 +1,28 @@
+{
+    "cli": {
+      "version": ">= 0.48.2"
+    },
+    "build": {
+      "test": {
+        "releaseChannel": "test",
+        "android": {
+          "buildType": "apk"
+        },
+        "ios": {
+          "simulator": false
+        }
+      },
+      "production": {
+        "releaseChannel": "production",
+        "android": {
+          "buildType": "app-bundle"
+        },
+        "ios": {
+          "simulator": false
+        }
+      }
+    },
+    "submit": {
+      "production": {}
+    }
+  }

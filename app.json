@@ -2,6 +2,7 @@
   "expo": {
     "name": "expo-implementing-authsession",
     "slug": "expo-implementing-authsession",
+    "scheme": "expo-implementing-authsession",
     "owner": "neostormz",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -19,9 +20,11 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.expoimplementingauthsession.app",
+      "supportsTablet": false
     },
     "android": {
+      "package": "com.expoimplementingauthsession.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
@@ -29,6 +32,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "2c8cf27f-9996-4e4c-8d4e-fc5eab967bdc"
+      }
     }
   }
 }
