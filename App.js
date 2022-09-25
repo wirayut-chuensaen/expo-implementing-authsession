@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StatusBar, Platform, Image, StyleSheet } from 'react-native';
 import Constants from 'expo-constants';
 import * as WebBrowser from 'expo-web-browser';
+import * as AuthSession from 'expo-auth-session';
 import * as Google from 'expo-auth-session/providers/google';
 import * as Facebook from 'expo-auth-session/providers/facebook';
 
@@ -17,8 +18,9 @@ export default function App() {
 	const [googleUserInfo, setGoogleUserInfo] = useState(null)
 
 	const [facebookAuthRequest, facebookAuthResponse, facebookAuthPromptAsync] = Facebook.useAuthRequest({
-		clientId: "606107717719562"
-	});
+		clientId: "606107717719562",
+		redirectUri: AuthSession.makeRedirectUri({ useProxy: true })
+	}, { useProxy: true });
 	const [facebookUserInfo, setFacebookUserInfo] = useState(null)
 
 	useEffect(() => {
@@ -34,8 +36,8 @@ export default function App() {
 	useEffect(() => {
 		// console.log("facebook auth response : ", facebookAuthResponse)
 		if (facebookAuthResponse?.type === "success") {
-			const { code } = facebookAuthResponse.params;
-			onFetchFacebookData(code)
+			const { authentication } = facebookAuthResponse;
+			onFetchFacebookData(authentication.accessToken)
 		} else {
 			// DO SOMETHING
 		}
@@ -61,6 +63,7 @@ export default function App() {
 
 	const clearInfo = () => {
 		setGoogleUserInfo(null)
+		setFacebookUserInfo(null)
 	}
 
 	return (
@@ -71,7 +74,7 @@ export default function App() {
 					:
 					<View style={{ width: "100%", height: Constants.statusBarHeight, backgroundColor: "black" }} />
 			}
-			<View style={{ flex: 1, paddingTop: "20%" }}>
+			<View style={styles.container}>
 				<View style={{ padding: 20, flexDirection: "row", justifyContent: "space-around", alignItems: "center" }}>
 					<TouchableOpacity style={[styles.authButton, { backgroundColor: "white" }]} onPress={() => googleAuthPromptAsync()}>
 						<Text style={{ color: "black" }}>Google Sign in</Text>
@@ -92,16 +95,20 @@ export default function App() {
 							<Text style={{ color: "black", fontSize: 16, marginTop: 8 }}>id : {"xxxxxxxxxxxxxxxx"}</Text>
 							<Text style={{ color: "black", fontSize: 16, marginTop: 8 }}>locale : {googleUserInfo.locale}</Text>
 						</>
-					}{
+					}
+					{
 						facebookUserInfo &&
 						<>
-
+							<Image source={{ uri: facebookUserInfo.picture.data.url }} style={{ width: 100, height: 100, borderRadius: 5 }} resizeMode={"cover"} />
+							<Text style={{ color: "black", fontSize: 16, marginTop: 8 }}>name : {facebookUserInfo.name}</Text>
+							<Text style={{ color: "black", fontSize: 16, marginTop: 8 }}>email : {facebookUserInfo.email}</Text>
+							<Text style={{ color: "black", fontSize: 16, marginTop: 8 }}>id : {"xxxxxxxxxxxxxxxx"}</Text>
 						</>
 					}
 				</View>
 				{
 					(googleUserInfo || facebookUserInfo) &&
-					<TouchableOpacity style={{ margin: 20, padding: 20, justifyContent: "center", alignItems: "center", backgroundColor: "white", borderWidth: 1, borderColor: "black", borderRadius: 5 }} onPress={clearInfo}>
+					<TouchableOpacity style={styles.clearButton} onPress={clearInfo}>
 						<Text>Clear</Text>
 					</TouchableOpacity>
 				}
@@ -111,6 +118,10 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		paddingTop: "20%"
+	},
 	authButton: {
 		backgroundColor: "white",
 		width: "45%",
@@ -126,5 +137,15 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.25,
 		shadowRadius: 3.84,
 		elevation: 5,
+	},
+	clearButton: {
+		margin: 20,
+		padding: 20,
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "white",
+		borderWidth: 1,
+		borderColor: "black",
+		borderRadius: 5
 	}
 })
